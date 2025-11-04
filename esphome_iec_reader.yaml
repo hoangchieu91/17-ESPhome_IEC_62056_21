@@ -4,7 +4,7 @@ esphome:
   platform: ESP32
   board: m5stack_atom
 
-# Cấu hình Wi-Fi và API (ESPHome tự động xử lý)
+# Cấu hình Wi-Fi và API
 wifi:
   ssid: "LEFA"
   password: "Lefa@2020"
@@ -21,20 +21,20 @@ ota:
 logger:
   baud_rate: 115500
 
-# Thêm Custom Component - SỬ DỤNG GITHUB SOURCE
+# Khai báo Custom Component, kéo từ GitHub
 external_components:
   - source: 
       type: git
-      # *** THAY THẾ DÒNG NÀY BẰNG LINK GITHUB CỦA BẠN (VÍ DỤ: https://github.com/yourname/iec_esp.git) ***
+      # *** THAY THẾ DÒNG NÀY BẰNG LINK GITHUB CỦA BẠN ***
       url: https://github.com/user_name/repo_name.git 
-      # Branch hoặc tag (ví dụ: main, v1.0)
       ref: main
     # Tên thư mục chứa file .h trong kho Git
     components: [iec_reader_component] 
   
-# Khai báo các thực thể sensor
+## --- CÁC CẢM BIẾN SỐ (VOLTAGE, CURRENT, ENERGY) ---
 sensor:
   - platform: custom
+    # Lambda gọi Custom Component Class
     lambda: |-
       auto iec_sensor = new IECReaderComponent();
       App.register_component(iec_sensor);
@@ -53,3 +53,18 @@ sensor:
         unit_of_measurement: "kWh"
         accuracy_decimals: 2
         id: iec_energy_sensor
+
+## --- CÁC CẢM BIẾN VĂN BẢN (ID, TIME) ---
+text_sensor:
+  - platform: custom
+    # Lambda gọi Custom Component Class (Phải tạo lại instance của class)
+    lambda: |-
+      auto iec_sensor = new IECReaderComponent();
+      App.register_component(iec_sensor);
+      return {iec_sensor->meter_id_sensor, iec_sensor->meter_time_sensor};
+
+    text_sensors:
+      - name: "IEC Meter ID"
+        id: iec_meter_id_sensor
+      - name: "IEC Meter Time"
+        id: iec_meter_time_sensor
