@@ -1,0 +1,55 @@
+esphome:
+  name: iec-energy-reader
+  # Thay thế bằng bo mạch M5Stack-ATOM
+  platform: ESP32
+  board: m5stack_atom
+
+# Cấu hình Wi-Fi và API (ESPHome tự động xử lý)
+wifi:
+  ssid: "LEFA"
+  password: "Lefa@2020"
+  
+  ap:
+    ssid: "IEC Reader Fallback"
+    password: "iecreaderpassword"
+
+api:
+  services:
+
+ota:
+
+logger:
+  baud_rate: 115500
+
+# Thêm Custom Component - SỬ DỤNG GITHUB SOURCE
+external_components:
+  - source: 
+      type: git
+      # *** THAY THẾ DÒNG NÀY BẰNG LINK GITHUB CỦA BẠN (VÍ DỤ: https://github.com/yourname/iec_esp.git) ***
+      url: https://github.com/user_name/repo_name.git 
+      # Branch hoặc tag (ví dụ: main, v1.0)
+      ref: main
+    # Tên thư mục chứa file .h trong kho Git
+    components: [iec_reader_component] 
+  
+# Khai báo các thực thể sensor
+sensor:
+  - platform: custom
+    lambda: |-
+      auto iec_sensor = new IECReaderComponent();
+      App.register_component(iec_sensor);
+      return {iec_sensor->voltage_sensor, iec_sensor->current_sensor, iec_sensor->energy_sensor};
+
+    sensors:
+      - name: "IEC Voltage"
+        unit_of_measurement: "V"
+        accuracy_decimals: 2
+        id: iec_voltage_sensor
+      - name: "IEC Current"
+        unit_of_measurement: "A"
+        accuracy_decimals: 2
+        id: iec_current_sensor
+      - name: "IEC Energy Total"
+        unit_of_measurement: "kWh"
+        accuracy_decimals: 2
+        id: iec_energy_sensor
