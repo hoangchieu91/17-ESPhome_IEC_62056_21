@@ -1,8 +1,8 @@
 esphome:
   name: iec-energy-reader
-  # Thay thế bằng bo mạch M5Stack-ATOM
+  # Board bạn đã sử dụng trước đó. Hãy thay thế nếu bạn dùng board khác.
   platform: ESP32
-  board: m5stack_atom
+  board: m5stack_atom 
 
 # Cấu hình Wi-Fi và API
 wifi:
@@ -21,14 +21,14 @@ ota:
 logger:
   baud_rate: 115500
 
-# Khai báo Custom Component, kéo từ GitHub
+# THAY ĐỔI: Sử dụng kho Git của bạn
 external_components:
   - source: 
       type: git
-      # *** THAY THẾ DÒNG NÀY BẰNG LINK GITHUB CỦA BẠN ***
-      url: https://github.com/user_name/repo_name.git 
+      url: https://github.com/hoangchieu91/17-ESPhome_IEC_62056_21.git 
+      # Branch mặc định
       ref: main
-    # Tên thư mục chứa file .h trong kho Git
+    # Tên thư mục component trong kho Git
     components: [iec_reader_component] 
   
 ## --- CÁC CẢM BIẾN SỐ (VOLTAGE, CURRENT, ENERGY) ---
@@ -57,7 +57,7 @@ sensor:
 ## --- CÁC CẢM BIẾN VĂN BẢN (ID, TIME) ---
 text_sensor:
   - platform: custom
-    # Lambda gọi Custom Component Class (Phải tạo lại instance của class)
+    # Lambda gọi Custom Component Class (Lưu ý: Bạn phải tạo lại instance của class)
     lambda: |-
       auto iec_sensor = new IECReaderComponent();
       App.register_component(iec_sensor);
